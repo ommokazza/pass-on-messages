@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name" translatable="false">Pass On Notifications</string>
+    <string name="app_name_short" translatable="false">Pass On Noti.</string>
+    <string name="category_history">[History]</string>
+    <string name="category_filter">[Filter]</string>
+    <string name="sms_permission_denied">"SMS permission denied. Cannot send SMS."</string>
+    <string name="filter_name">Filter Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="add_rule">Add Another Rule</string>
+    <string name="add_new_filter">Add New Filter</string>
+    <string name="enter_phrase">Enter phrase</string>
+    <string name="remove_rule">Delete Rule</string>
+
+    <!-- Edit/Delete Dialog -->
+    <string name="save">Save</string>
+    <string name="modify_filter">Modify Filter</string>
+    <string name="rules_condition_description">(All rules must be met)</string>
+    <string name="dialog_title_delete_filter">Delete Filter</string>
+    <string name="dialog_message_delete_filter">Are you sure you want to delete this filter?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Filter Item -->
+    <string name="name">Name</string>
+    <string name="pass_on_to">Pass on to</string>
+    <string name="rules">Rules</string>
+    <string name="delete_filter">Delete Filter</string>
+</resources>
