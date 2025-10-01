@@ -1,15 +1,20 @@
 package net.ommoks.azza.android.app.passonnotifications
 
-enum class RuleType(val key: String, val text: String) {
-    TitleContains("titleContains", "Title Contains"),
-    TitleIs("titleIs", "Title Is"),
+import android.content.Context
 
-    TextContains("textContains", "Text Contains"),
-    TextNotContains("textNotContains", "Text Not Contains");
+enum class RuleType {
+    TitleContains,
+    TitleIs,
 
-    companion object {
-        fun fromText(text: String): RuleType {
-            return entries.find { it.text == text } ?: TextContains
-        }
+    TextContains,
+    TextNotContains,
+}
+
+fun RuleType.getStringRes(context: Context) : String {
+    return when(this) {
+        RuleType.TitleContains -> context.getString(R.string.rule_type_title_contains)
+        RuleType.TitleIs -> context.getString(R.string.rule_type_title_is)
+        RuleType.TextContains -> context.getString(R.string.rule_type_text_contains)
+        RuleType.TextNotContains -> context.getString(R.string.rule_type_text_not_contains)
     }
 }

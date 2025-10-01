@@ -58,21 +58,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         }
     }
 
-    //    override fun onModifyFilterClick() {
-//        // 1. 비어있는 새로운 Filter 객체를 생성합니다.
-//        val newFilter = Filter(name = "새 필터", rules = mutableListOf(), passOnTo = "")
-//
-//        // 2. 어댑터의 데이터 목록에서 '필터 추가' 버튼 바로 앞에 새 필터를 추가합니다.
-//        val insertPosition = filterAdapter.itemCount - 1
-//        (filterAdapter.getItems() as MutableList<ListItem>).add(insertPosition, newFilter)
-//
-//        // 3. RecyclerView에 아이템이 추가되었음을 알립니다.
-//        filterAdapter.notifyItemInserted(insertPosition)
-//
-//        // 4. 추가된 새 필터를 바로 수정할 수 있도록, onFilterClick 함수를 호출하여 수정 다이얼로그를 띄웁니다.
-//        onModifyFilterClick(newFilter, insertPosition)
-//    }
-
     override fun onResume() {
         super.onResume()
         updateHistory()

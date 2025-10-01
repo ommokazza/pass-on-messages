@@ -11,6 +11,12 @@
     <string name="enter_phrase">Enter phrase</string>
     <string name="remove_rule">Delete Rule</string>
 
+    <!-- Rule Type -->
+    <string name="rule_type_title_contains">Title Contains</string>
+    <string name="rule_type_title_is">Title is</string>
+    <string name="rule_type_text_contains">Text Contains</string>
+    <string name="rule_type_text_not_contains">Text Not Contains</string>
+
     <!-- Edit/Delete Dialog -->
     <string name="save">Save</string>
     <string name="modify_filter">Modify Filter</string>
