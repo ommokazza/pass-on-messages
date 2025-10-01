@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import net.ommoks.azza.android.app.passonnotifications.databinding.FragmentMainBinding
 import net.ommoks.azza.android.app.passonnotificationsimport.FilterAdapter
 import java.util.UUID
 
 class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilterDialog.EditFilterDialogListener {
+
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
     private lateinit var filterAdapter: FilterAdapter
@@ -28,13 +32,14 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        history = view.findViewById(R.id.history)
-        recyclerView = view.findViewById(R.id.filter)
+        history = binding.history
+        recyclerView = binding.filter
         setupRecyclerView()
         applyViewModel()
     }
@@ -108,10 +113,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         history.text = historyReversed.joinToString("\n")
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
     private fun saveFilters() {
         //TODO: move to viewmodel and repository
         val filtersToSave = viewModel.filters.value
@@ -129,5 +130,10 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         } catch (e: Exception) {
             Log.e("FilterSave", "Error saving filters", e)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
