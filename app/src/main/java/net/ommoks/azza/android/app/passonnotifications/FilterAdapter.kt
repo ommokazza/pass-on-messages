@@ -11,6 +11,7 @@ import net.ommoks.azza.android.app.passonnotifications.AddFilterItem
 import net.ommoks.azza.android.app.passonnotifications.Filter
 import net.ommoks.azza.android.app.passonnotifications.ListItem
 import net.ommoks.azza.android.app.passonnotifications.R
+import net.ommoks.azza.android.app.passonnotifications.getStringRes
 
 class FilterAdapter(
     private val items: MutableList<ListItem>,
@@ -83,8 +84,9 @@ class FilterAdapter(
         holder.passOnTo.text = filter.passOnTo
         val sb = StringBuilder()
         filter.rules.forEach {
-            sb.append(it.type.text)
-            sb.append(": ")
+            sb.append("(")
+            sb.append(it.type.getStringRes(holder.itemView.context))
+            sb.append(") ")
             sb.append(it.phrase)
             sb.append("\n")
         }

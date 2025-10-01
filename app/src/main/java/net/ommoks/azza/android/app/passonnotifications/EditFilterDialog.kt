@@ -3,6 +3,8 @@ package net.ommoks.azza.android.app.passonnotifications
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -92,16 +94,23 @@ class EditFilterDialog : DialogFragment() {
             val deleteRuleIcon: ImageView = ruleView.findViewById(R.id.delete_rule_icon)
 
             // Spinner 설정
-            val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, RuleType.entries.map { it.text })
+            val spinnerAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                RuleType.entries.map { it.getStringRes(requireContext()) }
+            )
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             ruleTypeSpinner.adapter = spinnerAdapter
-            ruleTypeSpinner.setSelection(spinnerAdapter.getPosition(rule.type.text))
-//            ruleTypeSpinner.setOnItemSelectedListener { // 코틀린 확장 함수 사용
-//                val selectedRuleType = RuleType.fromText(ruleTypeSpinner.selectedItem as String)
-//                if (selectedRuleType != null) {
-//                    rule.type = selectedRuleType
-//                }
-//            }
+            ruleTypeSpinner.setSelection(spinnerAdapter.getPosition(rule.type.getStringRes(requireContext())))
+            ruleTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val selectedRuleType = RuleType.entries[position]
+                    rule.type = selectedRuleType
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
 
             // EditText 설정
             rulePhrase.setText(rule.phrase)
