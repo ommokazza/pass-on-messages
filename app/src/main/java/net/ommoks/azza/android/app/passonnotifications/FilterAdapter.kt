@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.ommoks.azza.android.app.passonnotifications.AddFilterItem
@@ -14,12 +16,13 @@ import net.ommoks.azza.android.app.passonnotifications.R
 import net.ommoks.azza.android.app.passonnotifications.getStringRes
 
 class FilterAdapter(
-    private val items: MutableList<ListItem>,
     private val listener: OnFilterActionsListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<ListItem, RecyclerView.ViewHolder>(FilterDiffCallback()) {
 
     interface OnFilterActionsListener {
-        fun onModifyFilterClick(filter: Filter, position: Int)
+        fun onFilterClick(filter: Filter)
+        fun onDeleteClick(filter: Filter)
+        fun onAddFilterClick()
     }
 
     companion object {
@@ -27,19 +30,8 @@ class FilterAdapter(
         private const val TYPE_ADD = 1
     }
 
-    // ViewHolder for the complex Filter item
-    class FilterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val filterName: TextView = view.findViewById(R.id.filter_name)
-        val passOnTo: TextView = view.findViewById(R.id.pass_on_to)
-        val rules: TextView = view.findViewById(R.id.rules)
-        val deleteFilterIcon: ImageView = view.findViewById(R.id.delete_filter_icon)
-    }
-
-    // ViewHolder for the 'Add' button item
-    class AddViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
     override fun getItemViewType(position: Int): Int {
-        return when (items[position]) {
+        return when (getItem(position)) {
             is Filter -> TYPE_FILTER
             is AddFilterItem -> TYPE_ADD
             else -> throw IllegalArgumentException("Invalid type of data $position")
@@ -62,24 +54,20 @@ class FilterAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position) // 현재 아이템 가져오기
         when (holder) {
             is FilterViewHolder -> {
-                val filter = items[position] as Filter
-                bindFilterViewHolder(holder, filter, position)
+                bindFilterViewHolder(holder, item as Filter)
             }
             is AddViewHolder -> {
                 holder.itemView.setOnClickListener {
-                    val newFilter = Filter(name = "", rules = mutableListOf(), passOnTo = "")
-                    val insertPosition = items.size - 1
-                    items.add(insertPosition, newFilter)
-                    notifyItemInserted(insertPosition)
-                    listener.onModifyFilterClick(newFilter, insertPosition)
+                    listener.onAddFilterClick()
                 }
             }
         }
     }
 
-    private fun bindFilterViewHolder(holder: FilterViewHolder, filter: Filter, position: Int) {
+    private fun bindFilterViewHolder(holder: FilterViewHolder, filter: Filter) {
         holder.filterName.text = filter.name
         holder.passOnTo.text = filter.passOnTo
         val sb = StringBuilder()
@@ -96,36 +84,42 @@ class FilterAdapter(
         holder.rules.text = sb.toString()
 
         holder.itemView.setOnClickListener {
-            listener.onModifyFilterClick(filter, position)
+            listener.onFilterClick(filter)
         }
 
         holder.deleteFilterIcon.setOnClickListener {
-            val currentPosition = holder.adapterPosition
-            if (currentPosition == RecyclerView.NO_POSITION) {
-                return@setOnClickListener
-            }
-
             MaterialAlertDialogBuilder(holder.itemView.context)
                 .setTitle(R.string.dialog_title_delete_filter)
                 .setMessage(R.string.dialog_message_delete_filter)
                 .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .setPositiveButton(R.string.delete) { dialog, _ ->
-                    items.removeAt(currentPosition)
-                    notifyItemRemoved(currentPosition)
+                    listener.onDeleteClick(filter)
                     dialog.dismiss()
                 }
                 .show()
         }
     }
 
-    override fun getItemCount(): Int = items.size
-
-    fun getFilterItems(): List<Filter> {
-        return items.filterIsInstance<Filter>()
+    class FilterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val filterName: TextView = view.findViewById(R.id.filter_name)
+        val passOnTo: TextView = view.findViewById(R.id.pass_on_to)
+        val rules: TextView = view.findViewById(R.id.rules)
+        val deleteFilterIcon: ImageView = view.findViewById(R.id.delete_filter_icon)
     }
 
-    fun updateFilter(filter: Filter, position: Int) {
-        items[position] = filter
-        notifyItemChanged(position)
+    class AddViewHolder(view: View) : RecyclerView.ViewHolder(view)
+}
+
+class FilterDiffCallback : DiffUtil.ItemCallback<ListItem>() {
+    override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
+        return if (oldItem is Filter && newItem is Filter) {
+            oldItem.id == newItem.id
+        } else {
+            oldItem::class == newItem::class
+        }
+    }
+
+    override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
+        return oldItem == newItem
     }
 }

@@ -7,17 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.passonnotificationsimport.FilterAdapter
+import java.util.UUID
 
 class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilterDialog.EditFilterDialogListener {
 
-    private lateinit var recyclerView: RecyclerView
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var filterAdapter: FilterAdapter
+    private lateinit var recyclerView: RecyclerView
     private lateinit var history: TextView
-    private var currentEditPosition: Int = -1
+    private var firstLoad = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,13 +36,12 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         history = view.findViewById(R.id.history)
         recyclerView = view.findViewById(R.id.filter)
         setupRecyclerView()
+        applyViewModel()
     }
 
     private fun setupRecyclerView() {
-        val filterList = Utils.loadFilters(requireContext().applicationContext)
-        filterList.add(AddFilterItem)
-
-        filterAdapter = FilterAdapter(filterList, this)
+        filterAdapter = FilterAdapter(this)
+        recyclerView.adapter = filterAdapter
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -45,16 +49,51 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         }
     }
 
-    override fun onModifyFilterClick(filter: Filter, position: Int) {
-        currentEditPosition = position
+    private fun applyViewModel() {
+        viewModel.addFilters(
+            Utils.loadFilters(requireContext()).map { it -> it as Filter }
+        )
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.filters.collect { filters ->
+                filterAdapter.submitList(mutableListOf<ListItem>(AddFilterItem) + filters)
+                if (firstLoad) {
+                    firstLoad = false
+                } else {
+                    //TODO: Move to view model?
+                    saveFilters()
+                }
+            }
+        }
+    }
+
+    override fun onFilterClick(filter: Filter) {
         val dialog = EditFilterDialog.newInstance(filter, this)
         dialog.show(childFragmentManager, "EditFilterDialog")
     }
 
+    override fun onDeleteClick(filter: Filter) {
+        viewModel.deleteFilter(filter)
+    }
+
+    override fun onAddFilterClick() {
+        val newFilter = Filter(
+            name = "",
+            rules = mutableListOf(),
+            passOnTo = "",
+            id = UUID.randomUUID().toString()
+        )
+
+        val dialog = EditFilterDialog.newInstance(newFilter, this)
+        dialog.show(childFragmentManager, "EditFilterDialog")
+    }
+
     override fun onFilterSaved(filter: Filter) {
-        if (currentEditPosition != -1) {
-            filterAdapter.updateFilter(filter, currentEditPosition)
-            currentEditPosition = -1
+        val existingFilter = viewModel.filters.value.find { it.id == filter.id }
+        if (existingFilter != null) {
+            viewModel.updateFilter(filter)
+        } else {
+            viewModel.addFilter(filter, true)
         }
     }
 
@@ -71,11 +110,11 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
 
     override fun onPause() {
         super.onPause()
-        saveFilters()
     }
 
     private fun saveFilters() {
-        val filtersToSave = filterAdapter.getFilterItems()
+        //TODO: move to viewmodel and repository
+        val filtersToSave = viewModel.filters.value
 
         if (filtersToSave.isEmpty()) {
             Log.d("FilterSave", "No filters to save.")
