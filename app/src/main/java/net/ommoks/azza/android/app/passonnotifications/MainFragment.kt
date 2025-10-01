@@ -11,12 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.passonnotifications.databinding.FragmentMainBinding
 import net.ommoks.azza.android.app.passonnotificationsimport.FilterAdapter
 import java.util.UUID
 
+@AndroidEntryPoint
 class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilterDialog.EditFilterDialogListener {
 
     private var _binding: FragmentMainBinding? = null
