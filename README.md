@@ -4,10 +4,10 @@
 
 구글 플레이에 등록하려 하니 비공개 테스트 13명의 테스트 결과가 필요하다고 하네요.
 
-구글 플레이에서 다운로드 받으시고 싶으신 분은 아래 구글그룹스 가입하고
-https://groups.google.com/g/pass-on-notifications/c/heIBstuV2d4?pli=1
+구글 플레이에서 다운로드 받으시고 싶으신 분은 아래 구글그룹스 가입하고  
+https://groups.google.com/g/pass-on-notifications/c/heIBstuV2d4?pli=1  
 
-아래 링크에서 받으시면 되겠습니다.
+아래 링크에서 받으시면 되겠습니다.  
 https://play.google.com/store/apps/details?id=net.ommoks.azza.android.app.passonnotifications
 
 (사용예)
