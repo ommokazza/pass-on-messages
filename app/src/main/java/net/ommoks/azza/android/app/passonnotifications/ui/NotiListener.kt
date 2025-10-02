@@ -1,6 +1,7 @@
 package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.app.Notification
+import android.provider.Telephony
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.telephony.SmsManager
@@ -25,7 +26,7 @@ class NotiListener : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
 
-        if (sbn.packageName == SAMSUNG_MESSAGE) {
+        if (sbn.packageName == Telephony.Sms.getDefaultSmsPackage(this)) {
             Log.d(TAG, "Handle onNotificationPosted() : package name = ${sbn.packageName}")
             val title = sbn.notification?.extras?.getString(Notification.EXTRA_TITLE, "") ?: ""
             val text = sbn.notification?.extras?.getString(Notification.EXTRA_TEXT, "") ?: ""
@@ -66,7 +67,5 @@ class NotiListener : NotificationListenerService() {
 
     companion object {
         private const val TAG = "NotiListener"
-
-        private const val SAMSUNG_MESSAGE = "com.samsung.android.messaging"
     }
 }
