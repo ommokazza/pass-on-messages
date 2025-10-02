@@ -57,10 +57,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     }
 
     private fun applyViewModel() {
-        viewModel.addFilters(
-            Utils.loadFilters(requireContext()).map { it -> it as Filter }
-        )
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.filters.collect { filters ->
                 filterAdapter.submitList(mutableListOf<ListItem>(AddFilterItem) + filters)
