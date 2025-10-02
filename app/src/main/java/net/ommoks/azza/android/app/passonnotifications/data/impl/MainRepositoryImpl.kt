@@ -16,7 +16,18 @@ class MainRepositoryImpl @Inject constructor(
 ) : MainRepository {
 
     override suspend fun saveFilters(filters: List<Filter>) {
-        //TODO: Implement
+        if (filters.isEmpty()) {
+            Log.e(TAG, "No filters to save.")
+            return
+        }
+
+        try {
+            val json = Json { prettyPrint = true }
+            val jsonString = json.encodeToString(filters)
+            fileDataSource.writeToInternalTextFile(Constants.FILTER_FILE, jsonString, false)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving filters", e)
+        }
     }
 
     override suspend fun loadFilters(): List<Filter> {
@@ -26,7 +37,7 @@ class MainRepositoryImpl @Inject constructor(
             try {
                 Json.decodeFromString<MutableList<Filter>>(jsonString)
             } catch (e: Exception) {
-                Log.e("FilterLoad", "Error decoding filters, starting with empty list", e)
+                Log.e(TAG, "Error decoding filters, starting with empty list", e)
                 mutableListOf()
             }
         } else {
@@ -35,5 +46,9 @@ class MainRepositoryImpl @Inject constructor(
 
         val listItems: MutableList<Filter> = filters.toMutableList()
         return listItems
+    }
+
+    companion object {
+        private const val TAG = "MainRepositoryImpl"
     }
 }

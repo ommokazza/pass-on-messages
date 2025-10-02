@@ -28,7 +28,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     private lateinit var filterAdapter: FilterAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var history: TextView
-    private var firstLoad = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,12 +59,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.filters.collect { filters ->
                 filterAdapter.submitList(mutableListOf<ListItem>(AddFilterItem) + filters)
-                if (firstLoad) {
-                    firstLoad = false
-                } else {
-                    //TODO: Move to view model?
-                    saveFilters()
-                }
             }
         }
     }
@@ -111,24 +104,7 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         history.text = historyReversed.joinToString("\n")
     }
 
-    private fun saveFilters() {
-        //TODO: move to viewmodel and repository
-        val filtersToSave = viewModel.filters.value
 
-        if (filtersToSave.isEmpty()) {
-            Log.d("FilterSave", "No filters to save.")
-            return
-        }
-
-        try {
-            val json = Json { prettyPrint = true }
-            val jsonString = json.encodeToString(filtersToSave)
-            Utils.writeToInternalFile(requireContext(), Constants.FILTER_FILE, jsonString)
-            Log.d("FilterSave", "Filters saved successfully")
-        } catch (e: Exception) {
-            Log.e("FilterSave", "Error saving filters", e)
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()

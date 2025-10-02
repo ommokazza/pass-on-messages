@@ -36,11 +36,12 @@ class MainViewModel @Inject constructor(
                     firstLoad = false
                 } else {
                     Log.d(TAG, "filters changed")
-                    //TODO: Save Filter if there is some changed in filters
+                    mainRepository.saveFilters(it)
                 }
             }
         }
     }
+
 
     fun addFilter(filter: Filter, intoFirst: Boolean = false) {
         _filters.value = if (intoFirst) {
