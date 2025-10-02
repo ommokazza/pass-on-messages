@@ -1,6 +1,7 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.data.model
 
 import android.content.Context
+import net.ommoks.azza.android.app.passonnotifications.R
 
 enum class RuleType {
     TitleContains,

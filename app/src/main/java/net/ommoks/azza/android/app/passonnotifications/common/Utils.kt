@@ -1,9 +1,8 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.common
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
@@ -33,9 +32,9 @@ object Utils {
      * @param append If true, appends content to the end of the file; otherwise, overwrites it.
      */
     fun writeToInternalFile(context: Context,
-                 fileName: String,
-                 content: String,
-                 append: Boolean = false) {
+                            fileName: String,
+                            content: String,
+                            append: Boolean = false) {
         val mode = if (append) Context.MODE_APPEND else Context.MODE_PRIVATE
         try {
             // openFileOutput returns a FileOutputStream
@@ -80,23 +79,5 @@ object Utils {
         return text.lines()
             .takeLast(linesCount)
             .joinToString("\n")
-    }
-
-    fun loadFilters(appContext: Context): MutableList<ListItem> {
-        val jsonString = Utils.readFromInternalFile(appContext, Constants.FILTER_FILE)
-
-        val filters: MutableList<Filter> = if (jsonString.isNotEmpty()) {
-            try {
-                Json.decodeFromString<MutableList<Filter>>(jsonString)
-            } catch (e: Exception) {
-                Log.e("FilterLoad", "Error decoding filters, starting with empty list", e)
-                mutableListOf()
-            }
-        } else {
-            mutableListOf()
-        }
-
-        val listItems: MutableList<ListItem> = filters.toMutableList()
-        return listItems
     }
 }

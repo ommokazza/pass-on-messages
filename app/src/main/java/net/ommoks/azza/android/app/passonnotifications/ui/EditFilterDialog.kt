@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.app.Dialog
 import android.os.Bundle
@@ -14,6 +14,12 @@ import android.widget.Spinner
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import net.ommoks.azza.android.app.passonnotifications.R
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.FilterRule
+import net.ommoks.azza.android.app.passonnotifications.data.model.RuleType
+import net.ommoks.azza.android.app.passonnotifications.data.model.getStringRes
+import java.io.Serializable
 
 class EditFilterDialog : DialogFragment() {
 
@@ -34,7 +40,7 @@ class EditFilterDialog : DialogFragment() {
             dialog.listener = listener
             // Filter 객체는 Serializable이므로 Bundle에 넣어 전달
             val args = Bundle().apply {
-                putSerializable(ARG_FILTER, filter as java.io.Serializable)
+                putSerializable(ARG_FILTER, filter as Serializable)
             }
             dialog.arguments = args
             return dialog

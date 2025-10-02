@@ -1,14 +1,26 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.telephony.SmsManager
 import android.util.Log
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.ommoks.azza.android.app.passonnotifications.common.Constants
+import net.ommoks.azza.android.app.passonnotifications.common.Utils
+import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.isMatched
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotiListener : NotificationListenerService() {
+
+    @Inject
+    lateinit var mainRepository: MainRepository
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
@@ -20,8 +32,7 @@ class NotiListener : NotificationListenerService() {
             val timestamp = sbn.postTime
 
             GlobalScope.launch {
-                val filter = checkFiltersAndRules(title, text)
-                if (filter != null) {
+                getMatchedFilters(title, text).forEach { filter ->
                     val content = Utils.dateTimeFromMillSec(timestamp) +
                             " : " + title + " (" + filter.name + ")"
                     Utils.writeToInternalFile(
@@ -31,29 +42,14 @@ class NotiListener : NotificationListenerService() {
                         append = true
                     )
                     passOnNotification(filter.passOnTo, title, text)
+                    delay(1000)
                 }
             }
         }
     }
 
-    private fun checkFiltersAndRules(title: String, text: String) : Filter? {
-        val filters = Utils.loadFilters(applicationContext)
-        filters.map { it -> it as Filter }.forEach { filter ->
-            val allMatched = filter.rules.isNotEmpty()
-                    && filter.rules.stream().allMatch { rule ->
-                        when (rule.type) {
-                            RuleType.TitleContains -> title.contains(rule.phrase)
-                            RuleType.TitleIs -> title == rule.phrase
-                            RuleType.TextContains -> text.contains(rule.phrase)
-                            RuleType.TextNotContains -> !text.contains(rule.phrase)
-                        }
-                    }
-
-            if (allMatched) {
-                return filter
-            }
-        }
-        return null
+    private suspend fun getMatchedFilters(title: String, text: String) : List<Filter> {
+        return mainRepository.loadFilters().filter { it -> it.isMatched(title, text) }
     }
 
     private fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
