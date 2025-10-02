@@ -7,6 +7,7 @@ import android.telephony.SmsManager
 import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class NotiListener : NotificationListenerService() {
             val timestamp = sbn.postTime
 
             GlobalScope.launch {
-                checkFiltersAndRules(title, text).forEach { filter ->
+                getMatchedFilters(title, text).forEach { filter ->
                     val content = Utils.dateTimeFromMillSec(timestamp) +
                             " : " + title + " (" + filter.name + ")"
                     Utils.writeToInternalFile(
@@ -37,30 +38,14 @@ class NotiListener : NotificationListenerService() {
                         append = true
                     )
                     passOnNotification(filter.passOnTo, title, text)
+                    delay(1000)
                 }
             }
         }
     }
 
-    private suspend fun checkFiltersAndRules(title: String, text: String) : List<Filter> {
-        val matched = mutableListOf<Filter>()
-        val filters = mainRepository.loadFilters()
-        filters.forEach { filter ->
-            val allMatched = filter.rules.isNotEmpty()
-                    && filter.rules.stream().allMatch { rule ->
-                        when (rule.type) {
-                            RuleType.TitleContains -> title.contains(rule.phrase)
-                            RuleType.TitleIs -> title == rule.phrase
-                            RuleType.TextContains -> text.contains(rule.phrase)
-                            RuleType.TextNotContains -> !text.contains(rule.phrase)
-                        }
-                    }
-
-            if (allMatched) {
-                matched.add(filter)
-            }
-        }
-        return matched
+    private suspend fun getMatchedFilters(title: String, text: String) : List<Filter> {
+        return mainRepository.loadFilters().filter { it -> it.isMatched(title, text) }
     }
 
     private fun passOnNotification(phoneNumber: String, title: String, fullText: String) {

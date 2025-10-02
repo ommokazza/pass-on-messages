@@ -3,7 +3,6 @@ package net.ommoks.azza.android.app.passonnotifications
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
