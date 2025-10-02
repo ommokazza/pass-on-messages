@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
+import net.ommoks.azza.android.app.passonnotifications.data.datasource.FileDataSource
 import net.ommoks.azza.android.app.passonnotifications.data.impl.MainRepositoryImpl
 import javax.inject.Singleton
 
@@ -17,6 +18,7 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideMainRepository(
-        @ApplicationContext appContext: Context
-    ) : MainRepository = MainRepositoryImpl(appContext)
+        @ApplicationContext appContext: Context,
+        fileDataSource: FileDataSource
+    ) : MainRepository = MainRepositoryImpl(appContext, fileDataSource)
 }
