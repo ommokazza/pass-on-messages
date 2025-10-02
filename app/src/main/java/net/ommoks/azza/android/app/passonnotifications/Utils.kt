@@ -81,22 +81,4 @@ object Utils {
             .takeLast(linesCount)
             .joinToString("\n")
     }
-
-    fun loadFilters(appContext: Context): MutableList<ListItem> {
-        val jsonString = Utils.readFromInternalFile(appContext, Constants.FILTER_FILE)
-
-        val filters: MutableList<Filter> = if (jsonString.isNotEmpty()) {
-            try {
-                Json.decodeFromString<MutableList<Filter>>(jsonString)
-            } catch (e: Exception) {
-                Log.e("FilterLoad", "Error decoding filters, starting with empty list", e)
-                mutableListOf()
-            }
-        } else {
-            mutableListOf()
-        }
-
-        val listItems: MutableList<ListItem> = filters.toMutableList()
-        return listItems
-    }
 }

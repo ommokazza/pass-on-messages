@@ -5,10 +5,17 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.telephony.SmsManager
 import android.util.Log
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotiListener : NotificationListenerService() {
+
+    @Inject
+    lateinit var mainRepository: MainRepository
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
@@ -20,8 +27,7 @@ class NotiListener : NotificationListenerService() {
             val timestamp = sbn.postTime
 
             GlobalScope.launch {
-                val filter = checkFiltersAndRules(title, text)
-                if (filter != null) {
+                checkFiltersAndRules(title, text).forEach { filter ->
                     val content = Utils.dateTimeFromMillSec(timestamp) +
                             " : " + title + " (" + filter.name + ")"
                     Utils.writeToInternalFile(
@@ -36,9 +42,10 @@ class NotiListener : NotificationListenerService() {
         }
     }
 
-    private fun checkFiltersAndRules(title: String, text: String) : Filter? {
-        val filters = Utils.loadFilters(applicationContext)
-        filters.map { it -> it as Filter }.forEach { filter ->
+    private suspend fun checkFiltersAndRules(title: String, text: String) : List<Filter> {
+        val matched = mutableListOf<Filter>()
+        val filters = mainRepository.loadFilters()
+        filters.forEach { filter ->
             val allMatched = filter.rules.isNotEmpty()
                     && filter.rules.stream().allMatch { rule ->
                         when (rule.type) {
@@ -50,10 +57,10 @@ class NotiListener : NotificationListenerService() {
                     }
 
             if (allMatched) {
-                return filter
+                matched.add(filter)
             }
         }
-        return null
+        return matched
     }
 
     private fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
