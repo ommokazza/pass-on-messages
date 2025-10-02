@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import net.ommoks.azza.android.app.passonnotifications.AddFilterItem
-import net.ommoks.azza.android.app.passonnotifications.Filter
-import net.ommoks.azza.android.app.passonnotifications.ListItem
 import net.ommoks.azza.android.app.passonnotifications.R
-import net.ommoks.azza.android.app.passonnotifications.getStringRes
+import net.ommoks.azza.android.app.passonnotifications.data.model.AddFilterItem
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.ListItem
+import net.ommoks.azza.android.app.passonnotifications.data.model.getStringRes
 
 class FilterAdapter(
     private val listener: OnFilterActionsListener

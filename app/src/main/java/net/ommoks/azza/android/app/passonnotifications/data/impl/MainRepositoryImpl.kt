@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
-import net.ommoks.azza.android.app.passonnotifications.Constants
-import net.ommoks.azza.android.app.passonnotifications.Filter
+import net.ommoks.azza.android.app.passonnotifications.common.Constants
 import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
 import net.ommoks.azza.android.app.passonnotifications.data.datasource.FileDataSource
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(

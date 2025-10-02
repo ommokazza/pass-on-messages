@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.app.Notification
 import android.service.notification.NotificationListenerService
@@ -9,7 +9,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.ommoks.azza.android.app.passonnotifications.common.Constants
+import net.ommoks.azza.android.app.passonnotifications.common.Utils
 import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.isMatched
 import javax.inject.Inject
 
 @AndroidEntryPoint

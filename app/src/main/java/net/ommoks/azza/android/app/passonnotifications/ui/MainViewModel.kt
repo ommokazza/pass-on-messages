@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.content.Context
 import android.util.Log
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.passonnotifications.data.MainRepository
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
 import javax.inject.Inject
 
 @HiltViewModel

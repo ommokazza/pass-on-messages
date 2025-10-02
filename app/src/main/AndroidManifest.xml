@@ -22,7 +22,7 @@
         android:theme="@style/Theme.PassOnNotifications">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name_short"
             android:exported="true" >
             <intent-filter>
@@ -33,7 +33,7 @@
         </activity>
 
         <service
-            android:name=".NotiListener"
+            android:name=".ui.NotiListener"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="remoteMessaging"

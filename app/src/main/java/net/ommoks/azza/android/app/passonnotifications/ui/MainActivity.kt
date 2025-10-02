@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -20,6 +20,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import dagger.hilt.android.AndroidEntryPoint
+import net.ommoks.azza.android.app.passonnotifications.R
 import net.ommoks.azza.android.app.passonnotifications.databinding.ActivityMainBinding
 
 @AndroidEntryPoint
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkNotificationAccessGranted() {
-        val notiManager : NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notiManager : NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (!notiManager.isNotificationListenerAccessGranted(
                 ComponentName(
                     this,
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun needIgnoreBatteryOptimization(): Boolean {
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
         val packageName = packageName
         return !powerManager.isIgnoringBatteryOptimizations(packageName)
     }
@@ -101,7 +102,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(
             Intent(
                 Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                parsePackageName(applicationContext))
+                parsePackageName(applicationContext)
+            )
         )
     }
 

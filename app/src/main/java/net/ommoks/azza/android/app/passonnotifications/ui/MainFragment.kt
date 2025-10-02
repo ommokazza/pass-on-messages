@@ -1,7 +1,6 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
+import net.ommoks.azza.android.app.passonnotifications.common.Constants
+import net.ommoks.azza.android.app.passonnotifications.common.Utils
+import net.ommoks.azza.android.app.passonnotifications.data.model.AddFilterItem
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.ListItem
 import net.ommoks.azza.android.app.passonnotifications.databinding.FragmentMainBinding
 import net.ommoks.azza.android.app.passonnotificationsimport.FilterAdapter
 import java.util.UUID
@@ -64,7 +67,7 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     }
 
     override fun onFilterClick(filter: Filter) {
-        val dialog = EditFilterDialog.newInstance(filter, this)
+        val dialog = EditFilterDialog.Companion.newInstance(filter, this)
         dialog.show(childFragmentManager, "EditFilterDialog")
     }
 
@@ -80,7 +83,7 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
             id = UUID.randomUUID().toString()
         )
 
-        val dialog = EditFilterDialog.newInstance(newFilter, this)
+        val dialog = EditFilterDialog.Companion.newInstance(newFilter, this)
         dialog.show(childFragmentManager, "EditFilterDialog")
     }
 

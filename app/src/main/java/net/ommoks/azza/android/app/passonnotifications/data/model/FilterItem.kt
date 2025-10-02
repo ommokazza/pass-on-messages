@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.data.model
 
 import kotlinx.serialization.Serializable
 import java.util.UUID

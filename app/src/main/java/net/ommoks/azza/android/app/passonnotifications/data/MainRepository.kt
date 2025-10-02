@@ -1,6 +1,6 @@
 package net.ommoks.azza.android.app.passonnotifications.data
 
-import net.ommoks.azza.android.app.passonnotifications.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
 
 interface MainRepository {
     suspend fun saveFilters(filters: List<Filter>)

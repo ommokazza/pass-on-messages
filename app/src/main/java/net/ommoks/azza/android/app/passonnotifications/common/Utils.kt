@@ -1,4 +1,4 @@
-package net.ommoks.azza.android.app.passonnotifications
+package net.ommoks.azza.android.app.passonnotifications.common
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -32,9 +32,9 @@ object Utils {
      * @param append If true, appends content to the end of the file; otherwise, overwrites it.
      */
     fun writeToInternalFile(context: Context,
-                 fileName: String,
-                 content: String,
-                 append: Boolean = false) {
+                            fileName: String,
+                            content: String,
+                            append: Boolean = false) {
         val mode = if (append) Context.MODE_APPEND else Context.MODE_PRIVATE
         try {
             // openFileOutput returns a FileOutputStream

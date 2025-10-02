@@ -1,8 +1,10 @@
 package net.ommoks.azza.android.app.passonnotifications
 
+import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
+import net.ommoks.azza.android.app.passonnotifications.data.model.FilterRule
+import net.ommoks.azza.android.app.passonnotifications.data.model.RuleType
+import net.ommoks.azza.android.app.passonnotifications.data.model.isMatched
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 
