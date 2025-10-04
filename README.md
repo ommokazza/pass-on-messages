@@ -8,7 +8,7 @@
 https://groups.google.com/g/pass-on-messages
 
 아래 링크에서 받으시면 되겠습니다.  
-https://play.google.com/store/apps/details?id=net.ommoks.azza.android.app.passonnotifications
+https://play.google.com/store/apps/details?id=net.ommoks.azza.android.app.pass_on_messages
 
 (사용예)
 - 특정 카드의 승인 문자를 가족에게 SMS로 전달.
