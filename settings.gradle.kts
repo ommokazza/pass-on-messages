@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PassOnNotifications"
+rootProject.name = "Pass On Messages"
 include(":app")
