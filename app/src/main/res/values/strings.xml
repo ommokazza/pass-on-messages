@@ -10,6 +10,12 @@
     <string name="add_new_filter">Add New Filter</string>
     <string name="enter_phrase">Enter phrase</string>
     <string name="remove_rule">Delete Rule</string>
+    <string name="export_rules">Export Rules</string>
+    <string name="import_rules">Import Rules</string>
+    <string name="toast_export_success">Exporting rules was successful.</string>
+    <string name="toast_export_fail">Exporting rules failed.</string>
+    <string name="toast_import_success">Importing rules was successful.</string>
+    <string name="toast_import_fail">Importing rules failed.</string>
 
     <!-- Rule Type -->
     <string name="rule_type_title_contains">Title Contains</string>
