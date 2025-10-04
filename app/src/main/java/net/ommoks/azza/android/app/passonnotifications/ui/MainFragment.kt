@@ -1,23 +1,33 @@
 package net.ommoks.azza.android.app.passonnotifications.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import net.ommoks.azza.android.app.passonnotifications.R
 import net.ommoks.azza.android.app.passonnotifications.common.Constants
 import net.ommoks.azza.android.app.passonnotifications.common.Utils
 import net.ommoks.azza.android.app.passonnotifications.data.model.AddFilterItem
 import net.ommoks.azza.android.app.passonnotifications.data.model.Filter
 import net.ommoks.azza.android.app.passonnotifications.data.model.ListItem
 import net.ommoks.azza.android.app.passonnotifications.databinding.FragmentMainBinding
+import net.ommoks.azza.android.app.passonnotifications.ui.MainViewModel.FileIOResult
 import net.ommoks.azza.android.app.passonnotificationsimport.FilterAdapter
 import java.util.UUID
 
@@ -32,6 +42,18 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     private lateinit var recyclerView: RecyclerView
     private lateinit var history: TextView
 
+    private val exportFileLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri: Uri? ->
+        uri?.let { viewModel.exportFilters(it) }
+    }
+
+    private val importFileLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.importFilters(it) }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +67,30 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         history = binding.history
         recyclerView = binding.filter
         setupRecyclerView()
+        setupMenu()
         applyViewModel()
+    }
+
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.export_rules -> {
+                        exportFileLauncher.launch("pass-on-messages-rules.json")
+                        true
+                    }
+                    R.id.import_rules -> {
+                        importFileLauncher.launch("application/json")
+                        true
+                    }
+                    else -> false // 처리하지 않은 경우 false 반환
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setupRecyclerView() {
@@ -62,6 +107,20 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.filters.collect { filters ->
                 filterAdapter.submitList(mutableListOf<ListItem>(AddFilterItem) + filters)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.fileIOResult.collect { result ->
+                val message = when (result) {
+                    is FileIOResult.Success -> result.message
+                    is FileIOResult.Failure -> result.message
+                }
+                Toast.makeText(
+                    this@MainFragment.requireActivity(),
+                    message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

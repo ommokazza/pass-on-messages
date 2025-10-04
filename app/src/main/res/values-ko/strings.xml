@@ -9,6 +9,11 @@
     <string name="add_new_filter">새 필터 추가</string>
     <string name="enter_phrase">문구를 입력하세요</string>
     <string name="remove_rule">규칙 삭제</string>
+    <string name="export_rules">규칙 내보내기</string>
+    <string name="toast_export_success">규칙을 성공적으로 내보냈습니다.</string>
+    <string name="toast_export_fail">규칙 내보내기에 실패했습니다.</string>
+    <string name="toast_import_success">규칙을 성공적으로 가져왔습니다.</string>
+    <string name="toast_import_fail">규칙 가져오기에 실패했습니다.</string>
 
     <!-- Edit/Delete Dialog -->
     <string name="rule_type_text_not_contains">내용에 포함안됨</string>
@@ -25,6 +30,7 @@
     <string name="pass_on_to">전달</string>
     <string name="rules">규칙</string>
     <string name="delete_filter">필터 삭제</string>
+    <string name="import_rules">규칙 가져오기</string>
     <string name="rule_type_title_contains">제목에 포함됨</string>
     <string name="rule_type_title_is">제목이 같음</string>
     <string name="rule_type_text_contains">내용에 포함됨</string>
