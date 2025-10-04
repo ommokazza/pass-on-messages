@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Pass On Notifications</string>
-    <string name="app_name_short" translatable="false">Pass On Noti.</string>
+    <string name="app_name" translatable="false">Pass On Messages</string>
+    <string name="app_name_short" translatable="false">Pass On MSGs.</string>
     <string name="category_history">[History]</string>
     <string name="category_filter">[Filter]</string>
     <string name="sms_permission_denied">"SMS permission denied. Cannot send SMS."</string>

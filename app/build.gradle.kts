@@ -7,15 +7,15 @@ plugins {
 }
 
 android {
-    namespace = "net.ommoks.azza.android.app.passonnotifications"
+    namespace = "net.ommoks.azza.android.app.pass_on_messages"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "net.ommoks.azza.android.app.passonnotifications"
+        applicationId = "net.ommoks.azza.android.app.pass_on_messages"
         minSdk = 29
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.0.5"
+        versionCode = 100
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
