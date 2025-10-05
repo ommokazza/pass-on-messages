@@ -7,14 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.pass_on_messages.R
+import net.ommoks.azza.android.app.pass_on_messages.data.AppPreferenceRepository
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
 import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
 import java.io.BufferedReader
@@ -24,8 +29,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext val appContext: Context,
-    val mainRepository: MainRepository
+    @ApplicationContext private val appContext: Context,
+    private val mainRepository: MainRepository,
+    private val appPreferenceRepository: AppPreferenceRepository,
 ) : ViewModel() {
 
     sealed class FileIOResult {
@@ -45,6 +51,12 @@ class MainViewModel @Inject constructor(
         }
         monitorFilters()
     }
+
+    val debugMode = appPreferenceRepository.getDebugModeFlow().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = false
+    )
 
     private fun monitorFilters() {
         viewModelScope.launch {
@@ -134,6 +146,18 @@ class MainViewModel @Inject constructor(
                 _fileIOResult.emit(FileIOResult.Failure(
                     appContext.getString(R.string.toast_import_fail) + ": ${e.message}"))
             }
+        }
+    }
+
+    suspend fun setDebugMode(mode: Boolean) {
+        withContext(Dispatchers.IO) {
+            appPreferenceRepository.setDebugMode(mode)
+        }
+    }
+
+    fun exportLog(uri: Uri) {
+        viewModelScope.launch {
+            //TODO: Implement this
         }
     }
 

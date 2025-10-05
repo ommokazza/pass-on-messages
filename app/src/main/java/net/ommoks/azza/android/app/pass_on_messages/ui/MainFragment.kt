@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.pass_on_messages.R
@@ -41,6 +42,8 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     private lateinit var recyclerView: RecyclerView
     private lateinit var history: TextView
 
+    private var clickCount = 0
+
     private val exportFileLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
@@ -51,6 +54,12 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { viewModel.importFilters(it) }
+    }
+
+    private val exportLogLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri: Uri? ->
+        uri?.let { viewModel.exportLog(it) }
     }
 
     override fun onCreateView(
@@ -65,8 +74,10 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         super.onViewCreated(view, savedInstanceState)
         history = binding.history
         recyclerView = binding.filter
+
         setupRecyclerView()
         setupMenu()
+        setupDebugMode()
         applyViewModel()
     }
 
@@ -74,6 +85,12 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.main_menu, menu)
+            }
+
+            override fun onPrepareMenu(menu: Menu) {
+                super.onPrepareMenu(menu)
+                val exportLogItem = menu.findItem(R.id.export_log)
+                exportLogItem.isVisible = viewModel.debugMode.value
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -84,6 +101,10 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
                     }
                     R.id.import_rules -> {
                         importFileLauncher.launch("application/json")
+                        true
+                    }
+                    R.id.export_log -> {
+                        exportLogLauncher.launch("pass-on-messages-log.txt")
                         true
                     }
                     else -> false // 처리하지 않은 경우 false 반환
@@ -99,6 +120,23 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = filterAdapter
+        }
+    }
+
+    private fun setupDebugMode() {
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar).setOnClickListener {
+            clickCount++
+            if (clickCount != 0 && (clickCount % 7 == 0)) {
+                lifecycleScope.launch {
+                    Toast.makeText(
+                        requireActivity(),
+                        if (! viewModel.debugMode.value) "Enable Debug Mode" else "Disable Debug Mode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    viewModel.setDebugMode(!viewModel.debugMode.value)
+                }
+            }
         }
     }
 
