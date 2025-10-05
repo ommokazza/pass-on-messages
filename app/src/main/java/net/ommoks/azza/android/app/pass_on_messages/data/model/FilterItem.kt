@@ -27,14 +27,20 @@ data class Filter(
 object AddFilterItem : ListItem
 
 fun Filter.isMatched(title: String, text: String) : Boolean {
+
     val allRulesMatched = rules.isNotEmpty()
             && rules.stream().allMatch { rule ->
         when (rule.type) {
             RuleType.TitleContains -> title.contains(rule.phrase)
-            RuleType.TitleIs -> title == rule.phrase
+
+            RuleType.TitleIs -> title.trim() == rule.phrase.trim()
+                    || title.replace(Regex("[\\u2068-\\u2069]"), "").trim() == rule.phrase.trim()
+
             RuleType.TextContains -> text.contains(rule.phrase)
+
             RuleType.TextNotContains -> !text.contains(rule.phrase)
         }
     }
+
     return allRulesMatched
 }
