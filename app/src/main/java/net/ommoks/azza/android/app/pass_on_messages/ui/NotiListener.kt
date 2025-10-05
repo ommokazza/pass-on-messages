@@ -10,6 +10,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import net.ommoks.azza.android.app.pass_on_messages.common.Constants
 import net.ommoks.azza.android.app.pass_on_messages.common.Utils
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
@@ -22,6 +24,8 @@ class NotiListener : NotificationListenerService() {
 
     @Inject
     lateinit var mainRepository: MainRepository
+
+    private val mutex = Mutex()
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
@@ -42,8 +46,10 @@ class NotiListener : NotificationListenerService() {
                         content,
                         append = true
                     )
-                    passOnNotification(filter.passOnTo, title, text)
-                    delay(1000)
+                    mutex.withLock {
+                        passOnNotification(filter.passOnTo, title, text)
+                        delay(3000)
+                    }
                 }
             }
         }
