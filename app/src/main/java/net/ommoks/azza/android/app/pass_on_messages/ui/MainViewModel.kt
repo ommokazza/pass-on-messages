@@ -2,11 +2,11 @@ package net.ommoks.azza.android.app.pass_on_messages.ui
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,11 +16,18 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.pass_on_messages.R
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
-import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
+import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
 import java.io.BufferedReader
 import java.io.FileOutputStream
 import java.io.InputStreamReader
 import javax.inject.Inject
+
+fun FilterItem.toModel() =
+    FilterModel(this.id, this.name, this.rules, this.passOnTo)
+
+fun FilterModel.toItem(timestamp: Long?) =
+    FilterItem(this.id, this.name, this.rules, this.passOnTo, timestamp)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -36,39 +43,27 @@ class MainViewModel @Inject constructor(
     private val _fileIOResult = MutableSharedFlow<FileIOResult>()
     val fileIOResult = _fileIOResult.asSharedFlow()
 
-    private val _filters = MutableStateFlow<List<Filter>>(mutableListOf())
-    val filters: StateFlow<List<Filter>> = _filters.asStateFlow()
-    private var firstLoad = true
+    private val _filters = MutableStateFlow<List<FilterItem>>(mutableListOf())
+    val filters: StateFlow<List<FilterItem>> = _filters.asStateFlow()
     init {
         viewModelScope.launch {
-            _filters.value = mainRepository.loadFilters()
-        }
-        monitorFilters()
-    }
-
-    private fun monitorFilters() {
-        viewModelScope.launch {
-            filters.collect {
-                if (firstLoad) {
-                    firstLoad = false
-                } else {
-                    Log.d(TAG, "filters changed")
-                    mainRepository.saveFilters(it)
-                }
+            _filters.value = mainRepository.loadFilters().map { model ->
+                model.toItem(mainRepository.getLastTimestamp(model))
             }
         }
     }
 
-
-    fun addFilter(filter: Filter, intoFirst: Boolean = false) {
+    fun addFilter(filter: FilterItem, intoFirst: Boolean = false) {
+        val newFilter = listOf(filter)
         _filters.value = if (intoFirst) {
-            listOf(filter) + _filters.value
+            newFilter + _filters.value
         } else {
-            _filters.value + filter
+            _filters.value + newFilter
         }
+        saveFilters()
     }
 
-    fun updateFilter(updatedFilter: Filter) {
+    fun updateFilter(updatedFilter: FilterItem) {
         _filters.value = _filters.value.map { filter ->
             if (filter.id == updatedFilter.id) {
                 updatedFilter
@@ -76,14 +71,23 @@ class MainViewModel @Inject constructor(
                 filter
             }
         }
+        saveFilters()
     }
 
-    fun deleteFilter(filterToDelete: Filter) {
+    fun deleteFilter(filterToDelete: FilterItem) {
         _filters.value = _filters.value - filterToDelete
+        saveFilters()
     }
 
-    fun replaceFilters(newFilters: List<Filter>) {
+    fun replaceFilters(newFilters: List<FilterItem>) {
         _filters.value = newFilters
+        saveFilters()
+    }
+
+    private fun saveFilters() {
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.saveFilters(_filters.value.map { it -> it.toModel() })
+        }
     }
 
     fun exportFilters(uri: Uri) {
@@ -120,7 +124,7 @@ class MainViewModel @Inject constructor(
                 }
                 val jsonString = stringBuilder.toString()
 
-                val filters = Json.decodeFromString<List<Filter>>(jsonString)
+                val filters = Json.decodeFromString<List<FilterItem>>(jsonString)
                 replaceFilters(filters)
 
                 _fileIOResult.emit(FileIOResult.Success(

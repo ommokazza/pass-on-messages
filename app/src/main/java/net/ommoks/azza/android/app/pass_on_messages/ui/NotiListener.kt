@@ -15,8 +15,8 @@ import kotlinx.coroutines.sync.withLock
 import net.ommoks.azza.android.app.pass_on_messages.common.Constants
 import net.ommoks.azza.android.app.pass_on_messages.common.Utils
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
-import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
-import net.ommoks.azza.android.app.pass_on_messages.data.model.isMatched
+import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
+import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,9 +37,10 @@ class NotiListener : NotificationListenerService() {
             val timestamp = sbn.postTime
 
             GlobalScope.launch {
-                getMatchedFilters(title, text).forEach { filter ->
+                getMatchedFilterModels(title, text).forEach { model ->
                     val content = Utils.dateTimeFromMillSec(timestamp) +
-                            " : " + title + " (" + filter.name + ")"
+                            " : " + title + " (" + model.name + ")"
+                    //TODO:Remove this log file
                     Utils.writeToInternalFile(
                         context = applicationContext,
                         Constants.LOG_FILE,
@@ -47,8 +48,8 @@ class NotiListener : NotificationListenerService() {
                         append = true
                     )
                     mutex.withLock {
-                        passOnNotification(filter.passOnTo, title, text)
-                        mainRepository.updateLastTimestamp(filter, timestamp)
+                        passOnNotification(model.passOnTo, title, text)
+                        mainRepository.updateLastTimestamp(model, timestamp)
                         delay(3000)
                     }
                 }
@@ -56,8 +57,8 @@ class NotiListener : NotificationListenerService() {
         }
     }
 
-    private suspend fun getMatchedFilters(title: String, text: String) : List<Filter> {
-        return mainRepository.loadFilters().filter { it -> it.isMatched(title, text) }
+    private suspend fun getMatchedFilterModels(title: String, text: String) : List<FilterModel> {
+        return mainRepository.loadFilters().filter { model -> model.isMatched(title, text) }
     }
 
     private fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
@@ -75,4 +76,23 @@ class NotiListener : NotificationListenerService() {
     companion object {
         private const val TAG = "NotiListener"
     }
+}
+
+fun FilterModel.isMatched(title: String, text: String) : Boolean {
+
+    val allRulesMatched = rules.isNotEmpty()
+            && rules.stream().allMatch { rule ->
+        when (rule.type) {
+            RuleType.TitleContains -> title.contains(rule.phrase)
+
+            RuleType.TitleIs -> title.trim() == rule.phrase.trim()
+                    || title.replace(Regex("[\\u2068-\\u2069]"), "").trim() == rule.phrase.trim()
+
+            RuleType.TextContains -> text.contains(rule.phrase)
+
+            RuleType.TextNotContains -> !text.contains(rule.phrase)
+        }
+    }
+
+    return allRulesMatched
 }

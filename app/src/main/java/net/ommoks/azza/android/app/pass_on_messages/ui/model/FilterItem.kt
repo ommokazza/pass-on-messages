@@ -1,6 +1,8 @@
-package net.ommoks.azza.android.app.pass_on_messages.data.model
+package net.ommoks.azza.android.app.pass_on_messages.ui.model
 
 import kotlinx.serialization.Serializable
+import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
+import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import java.util.UUID
 import java.io.Serializable as JavaSerializable
 
@@ -16,31 +18,13 @@ data class FilterRule(val id: String = UUID.randomUUID().toString(),
 
 // Represents a complete filter configuration
 @Serializable
-data class Filter(
+data class FilterItem(
     val id: String = UUID.randomUUID().toString(),
     var name: String,
     val rules: MutableList<FilterRule>,
-    var passOnTo: String // Phone number
+    var passOnTo: String, // Phone number
+    var recent: Long? = null
 ) : ListItem, JavaSerializable
 
 // A special object to represent the 'Add Filter' button in the list
 object AddFilterItem : ListItem
-
-fun Filter.isMatched(title: String, text: String) : Boolean {
-
-    val allRulesMatched = rules.isNotEmpty()
-            && rules.stream().allMatch { rule ->
-        when (rule.type) {
-            RuleType.TitleContains -> title.contains(rule.phrase)
-
-            RuleType.TitleIs -> title.trim() == rule.phrase.trim()
-                    || title.replace(Regex("[\\u2068-\\u2069]"), "").trim() == rule.phrase.trim()
-
-            RuleType.TextContains -> text.contains(rule.phrase)
-
-            RuleType.TextNotContains -> !text.contains(rule.phrase)
-        }
-    }
-
-    return allRulesMatched
-}

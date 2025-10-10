@@ -15,8 +15,8 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.ommoks.azza.android.app.pass_on_messages.R
-import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
-import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterRule
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterRule
 import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import net.ommoks.azza.android.app.pass_on_messages.data.model.getStringRes
 import java.io.Serializable
@@ -25,17 +25,17 @@ class EditFilterDialog : DialogFragment() {
 
     // 수정한 필터 정보를 MainFragment로 전달하기 위한 리스너
     interface EditFilterDialogListener {
-        fun onFilterSaved(filter: Filter)
+        fun onFilterSaved(filter: FilterItem)
     }
 
     private var listener: EditFilterDialogListener? = null
-    private lateinit var filter: Filter
+    private lateinit var filter: FilterItem
     private lateinit var rulesContainer: LinearLayout
 
     companion object {
         private const val ARG_FILTER = "filter"
 
-        fun newInstance(filter: Filter, listener: EditFilterDialogListener): EditFilterDialog {
+        fun newInstance(filter: FilterItem, listener: EditFilterDialogListener): EditFilterDialog {
             val dialog = EditFilterDialog()
             dialog.listener = listener
             // Filter 객체는 Serializable이므로 Bundle에 넣어 전달
@@ -49,8 +49,8 @@ class EditFilterDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // 전달받은 filter 객체를 복사해서 사용 (원본을 직접 수정하지 않음)
-        filter = (arguments?.getSerializable(ARG_FILTER) as? Filter)?.copy(
-            rules = (arguments?.getSerializable(ARG_FILTER) as Filter).rules.map { it.copy() }.toMutableList()
+        filter = (arguments?.getSerializable(ARG_FILTER) as? FilterItem)?.copy(
+            rules = (arguments?.getSerializable(ARG_FILTER) as FilterItem).rules.map { it.copy() }.toMutableList()
         ) ?: throw IllegalStateException("Filter cannot be null")
 
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_filter, null)

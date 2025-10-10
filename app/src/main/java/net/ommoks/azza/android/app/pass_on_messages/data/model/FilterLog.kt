@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FilterLog(
-    val timestamps: MutableList<Long>,
+    val timestamps: MutableList<Long>
 )

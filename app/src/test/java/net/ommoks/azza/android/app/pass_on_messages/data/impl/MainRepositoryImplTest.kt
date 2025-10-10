@@ -2,13 +2,14 @@ package net.ommoks.azza.android.app.pass_on_messages.data.impl
 
 import android.content.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.pass_on_messages.common.Constants
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
 import net.ommoks.azza.android.app.pass_on_messages.data.datasource.FileDataSource
-import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
 import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterLog
+import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
 import org.junit.After
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -35,45 +36,46 @@ class MainRepositoryImplTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testFilterLog() = runTest {
-        val filter = Filter("id_001", "test_rule", mutableListOf(), "1234")
-        mockMainRepository.updateLastTimestamp(filter, 100)
-        assertTrue(100L == mockMainRepository.getLastTimestamp(filter))
+        val fModel = FilterModel("id_001", "test_rule", mutableListOf(), "1234")
+        mockMainRepository.updateLastTimestamp(fModel, 100L)
+        assertTrue(100L == mockMainRepository.getLastTimestamp(fModel))
 
-        mockMainRepository.updateLastTimestamp(filter, 200)
-        assertTrue(200L == mockMainRepository.getLastTimestamp(filter))
+        mockMainRepository.updateLastTimestamp(fModel, 200L)
+        assertTrue(200L == mockMainRepository.getLastTimestamp(fModel))
 
-        mockMainRepository.updateLastTimestamp(filter, 300)
-        mockMainRepository.updateLastTimestamp(filter, 400)
-        mockMainRepository.updateLastTimestamp(filter, 500)
-        mockMainRepository.updateLastTimestamp(filter, 600)
-        mockMainRepository.updateLastTimestamp(filter, 700)
-        mockMainRepository.updateLastTimestamp(filter, 800)
-        mockMainRepository.updateLastTimestamp(filter, 900)
-        mockMainRepository.updateLastTimestamp(filter, 1000)
-        mockMainRepository.updateLastTimestamp(filter, 1100)
+        mockMainRepository.updateLastTimestamp(fModel, 300L)
+        mockMainRepository.updateLastTimestamp(fModel, 400L)
+        mockMainRepository.updateLastTimestamp(fModel, 500L)
+        mockMainRepository.updateLastTimestamp(fModel, 600L)
+        mockMainRepository.updateLastTimestamp(fModel, 700L)
+        mockMainRepository.updateLastTimestamp(fModel, 800L)
+        mockMainRepository.updateLastTimestamp(fModel, 900L)
+        mockMainRepository.updateLastTimestamp(fModel, 1000L)
+        mockMainRepository.updateLastTimestamp(fModel, 1100L)
 
-        assertTrue(1100L == mockMainRepository.getLastTimestamp(filter))
+        assertTrue(1100L == mockMainRepository.getLastTimestamp(fModel))
 
-        val filterLog = Json.decodeFromString<FilterLog>(mockFileDataSource.fileMap.get(filter.id) ?: "")
+        val jsonStr = mockFileDataSource.readFromInternalTextFile(fModel.logFilename())
+        val filterLog = Json.decodeFromString<FilterLog>(jsonStr)
         assertTrue(Constants.MAX_TIMESTAMP_COUNT == filterLog.timestamps.size)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testFilterLogDeleted() = runTest {
-        val filter1 = Filter("id_001", "test_rule", mutableListOf(), "1234")
-        val filter2 = Filter("id_002", "test_rule", mutableListOf(), "1234")
-        val filter3 = Filter("id_003", "test_rule", mutableListOf(), "1234")
-        mockMainRepository.saveFilters(mutableListOf(filter1, filter2, filter3))
+        val fModel1 = FilterModel("id_001", "test_rule", mutableListOf(), "1234")
+        val fModel2 = FilterModel("id_002", "test_rule", mutableListOf(), "1234")
+        val fModel3 = FilterModel("id_003", "test_rule", mutableListOf(), "1234")
+        mockMainRepository.saveFilters(mutableListOf(fModel1, fModel2, fModel3))
 
-        mockMainRepository.updateLastTimestamp(filter1, 100)
-        mockMainRepository.updateLastTimestamp(filter2, 200)
-        mockMainRepository.updateLastTimestamp(filter3, 300)
+        mockMainRepository.updateLastTimestamp(fModel1, 100)
+        mockMainRepository.updateLastTimestamp(fModel2, 200)
+        mockMainRepository.updateLastTimestamp(fModel3, 300)
 
         // Remove a filter
-        mockMainRepository.saveFilters(mutableListOf(filter1, filter3))
+        mockMainRepository.saveFilters(mutableListOf(fModel1, fModel3))
 
-        assertNull(mockMainRepository.getLastTimestamp(filter2))
+        assertNull(mockMainRepository.getLastTimestamp(fModel2))
     }
 }
 
