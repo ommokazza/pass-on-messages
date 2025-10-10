@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.ommoks.azza.android.app.pass_on_messages.R
+import net.ommoks.azza.android.app.pass_on_messages.common.Utils
 import net.ommoks.azza.android.app.pass_on_messages.data.model.AddFilterItem
 import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
 import net.ommoks.azza.android.app.pass_on_messages.data.model.ListItem
@@ -82,6 +83,7 @@ class FilterAdapter(
             sb.setLength(sb.length - 1)
         }
         holder.rules.text = sb.toString()
+//        holder.recent.text = Utils.dateTimeFromMillSec()
 
         holder.itemView.setOnClickListener {
             listener.onFilterClick(filter)
@@ -104,6 +106,7 @@ class FilterAdapter(
         val filterName: TextView = view.findViewById(R.id.filter_name)
         val passOnTo: TextView = view.findViewById(R.id.pass_on_to)
         val rules: TextView = view.findViewById(R.id.rules)
+        val recent: TextView = view.findViewById(R.id.recent)
         val deleteFilterIcon: ImageView = view.findViewById(R.id.delete_filter_icon)
     }
 
