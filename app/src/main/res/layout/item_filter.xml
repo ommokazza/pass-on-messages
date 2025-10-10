@@ -18,13 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingEnd="40dp"> <!-- 아이콘이 콘텐츠를 가리지 않도록 오른쪽 패딩 추가 -->
+            android:padding="16dp" >
 
             <!-- Name Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -85,7 +85,30 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    tools:text="3 rules applied" />
+                    tools:text="Text Contains" />
+            </LinearLayout>
+
+            <!-- Recently -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="@string/recent"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/recent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="2025. 10. 9. 오후 2:25:41" />
             </LinearLayout>
 
         </LinearLayout>
@@ -102,7 +125,6 @@
             android:padding="6dp"
             android:src="@drawable/ic_close"
             app:tint="?android:attr/textColorPrimary" />
-        <!-- Material 아이콘의 ic_close가 더 명확할 수 있습니다. -->
 
     </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

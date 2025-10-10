@@ -10,18 +10,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.ommoks.azza.android.app.pass_on_messages.R
-import net.ommoks.azza.android.app.pass_on_messages.data.model.AddFilterItem
-import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
-import net.ommoks.azza.android.app.pass_on_messages.data.model.ListItem
+import net.ommoks.azza.android.app.pass_on_messages.common.Utils
 import net.ommoks.azza.android.app.pass_on_messages.data.model.getStringRes
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.AddFilterItem
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.ListItem
 
 class FilterAdapter(
     private val listener: OnFilterActionsListener
 ) : ListAdapter<ListItem, RecyclerView.ViewHolder>(FilterDiffCallback()) {
 
     interface OnFilterActionsListener {
-        fun onFilterClick(filter: Filter)
-        fun onDeleteClick(filter: Filter)
+        fun onFilterClick(filter: FilterItem)
+        fun onDeleteClick(filter: FilterItem)
         fun onAddFilterClick()
     }
 
@@ -32,7 +33,7 @@ class FilterAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Filter -> TYPE_FILTER
+            is FilterItem -> TYPE_FILTER
             is AddFilterItem -> TYPE_ADD
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
@@ -57,7 +58,7 @@ class FilterAdapter(
         val item = getItem(position) // 현재 아이템 가져오기
         when (holder) {
             is FilterViewHolder -> {
-                bindFilterViewHolder(holder, item as Filter)
+                bindFilterViewHolder(holder, item as FilterItem)
             }
             is AddViewHolder -> {
                 holder.itemView.setOnClickListener {
@@ -67,7 +68,7 @@ class FilterAdapter(
         }
     }
 
-    private fun bindFilterViewHolder(holder: FilterViewHolder, filter: Filter) {
+    private fun bindFilterViewHolder(holder: FilterViewHolder, filter: FilterItem) {
         holder.filterName.text = filter.name
         holder.passOnTo.text = filter.passOnTo
         val sb = StringBuilder()
@@ -82,6 +83,7 @@ class FilterAdapter(
             sb.setLength(sb.length - 1)
         }
         holder.rules.text = sb.toString()
+        holder.recent.text = Utils.dateTimeFromMillSec(filter.recent)
 
         holder.itemView.setOnClickListener {
             listener.onFilterClick(filter)
@@ -104,6 +106,7 @@ class FilterAdapter(
         val filterName: TextView = view.findViewById(R.id.filter_name)
         val passOnTo: TextView = view.findViewById(R.id.pass_on_to)
         val rules: TextView = view.findViewById(R.id.rules)
+        val recent: TextView = view.findViewById(R.id.recent)
         val deleteFilterIcon: ImageView = view.findViewById(R.id.delete_filter_icon)
     }
 
@@ -112,7 +115,7 @@ class FilterAdapter(
 
 class FilterDiffCallback : DiffUtil.ItemCallback<ListItem>() {
     override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
-        return if (oldItem is Filter && newItem is Filter) {
+        return if (oldItem is FilterItem && newItem is FilterItem) {
             oldItem.id == newItem.id
         } else {
             oldItem::class == newItem::class
