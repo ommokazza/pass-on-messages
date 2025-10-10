@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="category_history">[기록]</string>
-    <string name="category_filter">[필터]</string>
     <string name="sms_permission_denied">SMS 권한이 거부되었습니다. SMS를 보낼 수 없습니다.</string>
     <string name="filter_name">필터명</string>
     <string name="phone_number">전화번호</string>

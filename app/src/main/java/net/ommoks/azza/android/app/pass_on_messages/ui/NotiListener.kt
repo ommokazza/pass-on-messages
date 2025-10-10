@@ -40,13 +40,6 @@ class NotiListener : NotificationListenerService() {
                 getMatchedFilterModels(title, text).forEach { model ->
                     val content = Utils.dateTimeFromMillSec(timestamp) +
                             " : " + title + " (" + model.name + ")"
-                    //TODO:Remove this log file
-                    Utils.writeToInternalFile(
-                        context = applicationContext,
-                        Constants.LOG_FILE,
-                        content,
-                        append = true
-                    )
                     mutex.withLock {
                         passOnNotification(model.passOnTo, title, text)
                         mainRepository.updateLastTimestamp(model, timestamp)

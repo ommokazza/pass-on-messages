@@ -21,13 +21,11 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.pass_on_messages.R
-import net.ommoks.azza.android.app.pass_on_messages.common.Constants
-import net.ommoks.azza.android.app.pass_on_messages.common.Utils
+import net.ommoks.azza.android.app.pass_on_messages.databinding.FragmentMainBinding
+import net.ommoks.azza.android.app.pass_on_messages.ui.MainViewModel.FileIOResult
 import net.ommoks.azza.android.app.pass_on_messages.ui.model.AddFilterItem
 import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
 import net.ommoks.azza.android.app.pass_on_messages.ui.model.ListItem
-import net.ommoks.azza.android.app.pass_on_messages.databinding.FragmentMainBinding
-import net.ommoks.azza.android.app.pass_on_messages.ui.MainViewModel.FileIOResult
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -39,7 +37,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     private val viewModel: MainViewModel by viewModels()
     private lateinit var filterAdapter: FilterAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var history: TextView
 
     private val exportFileLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -63,7 +60,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        history = binding.history
         recyclerView = binding.filter
         setupRecyclerView()
         setupMenu()
@@ -153,19 +149,6 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
             viewModel.addFilter(filter, true)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        updateHistory()
-    }
-
-    private fun updateHistory() {
-        val historyRaw = Utils.readFromInternalFile(requireContext(), Constants.LOG_FILE)
-        val historyReversed = historyRaw.split("\n").reversed().filter { it.isNotEmpty() }
-        history.text = historyReversed.joinToString("\n")
-    }
-
-
 
     override fun onDestroy() {
         super.onDestroy()
