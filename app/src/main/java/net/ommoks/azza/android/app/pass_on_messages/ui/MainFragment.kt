@@ -79,7 +79,7 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.export_rules -> {
-                        exportFileLauncher.launch("pass-on-messages-rules.json")
+                        exportFileLauncher.launch("pass-on-messages-filters.json")
                         true
                     }
                     R.id.import_rules -> {
