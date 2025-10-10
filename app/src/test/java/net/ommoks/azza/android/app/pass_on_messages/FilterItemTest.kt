@@ -4,9 +4,8 @@ import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
 import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterRule
 import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import net.ommoks.azza.android.app.pass_on_messages.data.model.isMatched
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertTrue
-
 
 class FilterItemTest {
 

@@ -4,4 +4,5 @@ object Constants {
 
     const val FILTER_FILE = "filter.json"
     const val LOG_FILE = "log.txt"
+    const val MAX_TIMESTAMP_COUNT = 10
 }
