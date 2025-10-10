@@ -8,6 +8,7 @@ import net.ommoks.azza.android.app.pass_on_messages.common.Constants
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
 import net.ommoks.azza.android.app.pass_on_messages.data.datasource.FileDataSource
 import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
+import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterLog
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -48,7 +49,41 @@ class MainRepositoryImpl @Inject constructor(
         return listItems
     }
 
+    override suspend fun updateLastTimestamp(filter: Filter, timestampInMillisecond: Long) {
+        val filterLog = readFilterLogJson(filter.id) ?: FilterLog(mutableListOf())
+        filterLog.timestamps.add(timestampInMillisecond)
+
+        try {
+            val json = Json { prettyPrint = true }
+            val jsonString = json.encodeToString(
+                FilterLog(filterLog.timestamps.take(MAX_TIMESTAMP_COUNT).toMutableList()))
+            fileDataSource.writeToInternalTextFile(filter.id, jsonString, false)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving filters", e)
+        }
+    }
+
+    override suspend fun getLastTimestamp(filter: Filter): Long? {
+        return readFilterLogJson(filter.id)?.timestamps?.max()
+    }
+
+    private suspend fun readFilterLogJson(id: String) : FilterLog? {
+        val jsonString = fileDataSource.readFromInternalTextFile(id)
+        return if (jsonString.isNotEmpty()) {
+            try {
+                Json.decodeFromString<FilterLog>(jsonString)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error decoding filter log, starting with empty list", e)
+                null
+            }
+        } else {
+            null
+        }
+    }
+
     companion object {
         private const val TAG = "MainRepositoryImpl"
+
+        private const val MAX_TIMESTAMP_COUNT = 10
     }
 }

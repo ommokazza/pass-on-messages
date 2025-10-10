@@ -48,6 +48,7 @@ class NotiListener : NotificationListenerService() {
                     )
                     mutex.withLock {
                         passOnNotification(filter.passOnTo, title, text)
+                        mainRepository.updateLastTimestamp(filter, timestamp)
                         delay(3000)
                     }
                 }
