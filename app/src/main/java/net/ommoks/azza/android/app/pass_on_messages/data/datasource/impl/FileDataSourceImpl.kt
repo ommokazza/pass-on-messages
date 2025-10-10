@@ -33,4 +33,8 @@ class FileDataSourceImpl @Inject constructor(
             ""
         }
     }
+
+    override fun deleteFile(filename: String) {
+        appContext.deleteFile(filename)
+    }
 }

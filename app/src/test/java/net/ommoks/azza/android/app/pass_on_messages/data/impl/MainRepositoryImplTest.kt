@@ -68,4 +68,8 @@ class MockFileDataSource : FileDataSource {
     override suspend fun readFromInternalTextFile(filename: String): String {
         return fileMap.get(filename) ?: ""
     }
+
+    override fun deleteFile(filename: String) {
+        TODO("Not yet implemented")
+    }
 }

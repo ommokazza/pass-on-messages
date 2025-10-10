@@ -22,10 +22,19 @@ class MainRepositoryImpl @Inject constructor(
             return
         }
 
+        val prevFilters = loadFilters()
         try {
             val json = Json { prettyPrint = true }
             val jsonString = json.encodeToString(filters)
             fileDataSource.writeToInternalTextFile(Constants.FILTER_FILE, jsonString, false)
+
+            val newFilterIds = filters.map { it -> it.id }
+            prevFilters.forEach { oldFilter ->
+                if (!newFilterIds.contains(oldFilter.id)) {
+                    fileDataSource.deleteFile(LOG_FILE_PREFIX + oldFilter.id)
+                }
+            }
+
         } catch (e: Exception) {
             Log.e(TAG, "Error saving filters", e)
         }
@@ -50,25 +59,25 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateLastTimestamp(filter: Filter, timestampInMillisecond: Long) {
-        val filterLog = readFilterLogJson(filter.id) ?: FilterLog(mutableListOf())
+        val filterLog = readFilterLogJson(filter) ?: FilterLog(mutableListOf())
         filterLog.timestamps.add(0, timestampInMillisecond)
 
         try {
             val json = Json { prettyPrint = true }
             val jsonString = json.encodeToString(
                 FilterLog(filterLog.timestamps.take(Constants.MAX_TIMESTAMP_COUNT).toMutableList()))
-            fileDataSource.writeToInternalTextFile(filter.id, jsonString, false)
+            fileDataSource.writeToInternalTextFile(filter.logFilename(), jsonString, false)
         } catch (e: Exception) {
             Log.e(TAG, "Error saving filters", e)
         }
     }
 
     override suspend fun getLastTimestamp(filter: Filter): Long? {
-        return readFilterLogJson(filter.id)?.timestamps?.max()
+        return readFilterLogJson(filter)?.timestamps?.max()
     }
 
-    private suspend fun readFilterLogJson(id: String) : FilterLog? {
-        val jsonString = fileDataSource.readFromInternalTextFile(id)
+    private suspend fun readFilterLogJson(filter: Filter) : FilterLog? {
+        val jsonString = fileDataSource.readFromInternalTextFile(filter.logFilename())
         return if (jsonString.isNotEmpty()) {
             try {
                 Json.decodeFromString<FilterLog>(jsonString)
@@ -85,3 +94,6 @@ class MainRepositoryImpl @Inject constructor(
         private const val TAG = "MainRepositoryImpl"
     }
 }
+
+private const val LOG_FILE_PREFIX = "log_"
+fun Filter.logFilename() = LOG_FILE_PREFIX + this.id
