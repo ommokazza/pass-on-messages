@@ -10,6 +10,7 @@ import net.ommoks.azza.android.app.pass_on_messages.data.datasource.FileDataSour
 import net.ommoks.azza.android.app.pass_on_messages.data.model.Filter
 import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterLog
 import org.junit.After
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -56,6 +57,24 @@ class MainRepositoryImplTest {
         val filterLog = Json.decodeFromString<FilterLog>(mockFileDataSource.fileMap.get(filter.id) ?: "")
         assertTrue(Constants.MAX_TIMESTAMP_COUNT == filterLog.timestamps.size)
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testFilterLogDeleted() = runTest {
+        val filter1 = Filter("id_001", "test_rule", mutableListOf(), "1234")
+        val filter2 = Filter("id_002", "test_rule", mutableListOf(), "1234")
+        val filter3 = Filter("id_003", "test_rule", mutableListOf(), "1234")
+        mockMainRepository.saveFilters(mutableListOf(filter1, filter2, filter3))
+
+        mockMainRepository.updateLastTimestamp(filter1, 100)
+        mockMainRepository.updateLastTimestamp(filter2, 200)
+        mockMainRepository.updateLastTimestamp(filter3, 300)
+
+        // Remove a filter
+        mockMainRepository.saveFilters(mutableListOf(filter1, filter3))
+
+        assertNull(mockMainRepository.getLastTimestamp(filter2))
+    }
 }
 
 class MockFileDataSource : FileDataSource {
@@ -70,6 +89,6 @@ class MockFileDataSource : FileDataSource {
     }
 
     override fun deleteFile(filename: String) {
-        TODO("Not yet implemented")
+        fileMap.remove(filename)
     }
 }

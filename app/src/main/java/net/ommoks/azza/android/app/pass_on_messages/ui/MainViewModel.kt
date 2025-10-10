@@ -68,11 +68,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addFilters(filters: List<Filter>) {
-        _filters.value = _filters.value + filters
-    }
-
-
     fun updateFilter(updatedFilter: Filter) {
         _filters.value = _filters.value.map { filter ->
             if (filter.id == updatedFilter.id) {
