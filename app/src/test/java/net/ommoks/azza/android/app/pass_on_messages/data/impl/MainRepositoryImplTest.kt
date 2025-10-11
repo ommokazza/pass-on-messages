@@ -2,7 +2,6 @@ package net.ommoks.azza.android.app.pass_on_messages.data.impl
 
 import android.content.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import net.ommoks.azza.android.app.pass_on_messages.common.Constants

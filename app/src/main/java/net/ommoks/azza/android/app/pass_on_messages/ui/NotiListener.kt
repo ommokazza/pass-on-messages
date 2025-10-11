@@ -12,8 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.ommoks.azza.android.app.pass_on_messages.common.Constants
-import net.ommoks.azza.android.app.pass_on_messages.common.Utils
 import net.ommoks.azza.android.app.pass_on_messages.data.MainRepository
 import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
 import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
@@ -38,8 +36,6 @@ class NotiListener : NotificationListenerService() {
 
             GlobalScope.launch {
                 getMatchedFilterModels(title, text).forEach { model ->
-                    val content = Utils.dateTimeFromMillSec(timestamp) +
-                            " : " + title + " (" + model.name + ")"
                     mutex.withLock {
                         passOnNotification(model.passOnTo, title, text)
                         mainRepository.updateLastTimestamp(model, timestamp)
