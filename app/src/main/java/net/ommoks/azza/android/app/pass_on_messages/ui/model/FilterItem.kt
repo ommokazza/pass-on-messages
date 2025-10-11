@@ -1,7 +1,6 @@
 package net.ommoks.azza.android.app.pass_on_messages.ui.model
 
 import kotlinx.serialization.Serializable
-import net.ommoks.azza.android.app.pass_on_messages.data.model.FilterModel
 import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import java.util.UUID
 import java.io.Serializable as JavaSerializable

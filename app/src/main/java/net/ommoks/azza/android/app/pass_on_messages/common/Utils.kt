@@ -1,9 +1,6 @@
 package net.ommoks.azza.android.app.pass_on_messages.common
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
-import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

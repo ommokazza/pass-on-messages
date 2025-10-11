@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="24dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="RtlSymmetry">
 
                 <TextView
                     android:layout_width="80dp"

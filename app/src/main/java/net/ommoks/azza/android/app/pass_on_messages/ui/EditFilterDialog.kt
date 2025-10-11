@@ -2,7 +2,6 @@ package net.ommoks.azza.android.app.pass_on_messages.ui
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -15,10 +14,10 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.ommoks.azza.android.app.pass_on_messages.R
-import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
-import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterRule
 import net.ommoks.azza.android.app.pass_on_messages.data.model.RuleType
 import net.ommoks.azza.android.app.pass_on_messages.data.model.getStringRes
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterItem
+import net.ommoks.azza.android.app.pass_on_messages.ui.model.FilterRule
 import java.io.Serializable
 
 class EditFilterDialog : DialogFragment() {
@@ -53,7 +52,7 @@ class EditFilterDialog : DialogFragment() {
             rules = (arguments?.getSerializable(ARG_FILTER) as FilterItem).rules.map { it.copy() }.toMutableList()
         ) ?: throw IllegalStateException("Filter cannot be null")
 
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_filter, null)
+        val view = layoutInflater.inflate(R.layout.dialog_edit_filter, null)
         rulesContainer = view.findViewById(R.id.rules_container)
 
         val filterNameEdit: EditText = view.findViewById(R.id.filter_name_edit)
@@ -91,10 +90,9 @@ class EditFilterDialog : DialogFragment() {
 
     private fun updateRulesUI() {
         rulesContainer.removeAllViews()
-        val inflater = LayoutInflater.from(requireContext())
 
         filter.rules.forEach { rule ->
-            val ruleView = inflater.inflate(R.layout.item_rule, rulesContainer, false)
+            val ruleView = layoutInflater.inflate(R.layout.item_rule, rulesContainer, false)
             val ruleTypeSpinner: Spinner = ruleView.findViewById(R.id.rule_type_spinner)
             val rulePhrase: EditText = ruleView.findViewById(R.id.rule_phrase)
             val deleteRuleIcon: ImageView = ruleView.findViewById(R.id.delete_rule_icon)

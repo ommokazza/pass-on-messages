@@ -2,7 +2,6 @@
 <resources>
     <string name="sms_permission_denied">SMS 권한이 거부되었습니다. SMS를 보낼 수 없습니다.</string>
     <string name="filter_name">필터명</string>
-    <string name="phone_number">전화번호</string>
     <string name="add_rule">규칙 추가 </string>
     <string name="add_new_filter">새 필터 추가</string>
     <string name="enter_phrase">문구를 입력하세요</string>

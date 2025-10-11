@@ -3,7 +3,6 @@
     <string name="app_name_short" translatable="false">Pass On MSGs.</string>
     <string name="sms_permission_denied">"SMS permission denied. Cannot send SMS."</string>
     <string name="filter_name">Filter Name</string>
-    <string name="phone_number">Phone Number</string>
     <string name="add_rule">Add Another Rule</string>
     <string name="add_new_filter">Add New Filter</string>
     <string name="enter_phrase">Enter phrase</string>

@@ -26,7 +26,8 @@
             android:layout_marginStart="8dp"
             android:hint="@string/enter_phrase"
             android:inputType="text"
-            android:textAppearance="?attr/textAppearanceBodyMedium" />
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            tools:ignore="Autofill" />
 
         <ImageView
             android:id="@+id/delete_rule_icon"
