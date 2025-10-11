@@ -14,8 +14,8 @@ android {
         applicationId = "net.ommoks.azza.android.app.pass_on_messages"
         minSdk = 29
         targetSdk = 36
-        versionCode = 100
-        versionName = "0.1.0"
+        versionCode = 900
+        versionName = "0.9.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
