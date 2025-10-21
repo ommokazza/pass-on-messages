@@ -17,6 +17,7 @@ ksp = "2.2.20-2.0.3"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinSerializationJson = "1.9.0"
 mockitoKotlin = "6.1.0"
+preference = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationJson" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
