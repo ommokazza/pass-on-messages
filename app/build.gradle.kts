@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.hilt.android)
+    implementation(libs.androidx.preference)
     ksp(libs.dagger.hilt.android.compiler)
 
     testImplementation(libs.junit)

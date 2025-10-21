@@ -35,4 +35,10 @@
     <string name="rule_type_title_is">Title is</string>
     <string name="rule_type_text_contains">Text Contains</string>
     <string name="rule_type_text_not_contains">Text Not Contains</string>
+
+    <!-- Debug Mode -->
+    <string name="debug_mode" translatable="false">Debug Mode</string>
+    <string name="event_logging_title" translatable="false">Event Logging</string>
+    <string name="event_logging_switch" translatable="false">Enable Event Logging</string>
+    <string name="event_loggin_summary" translatable="false">When turning off, exporting log</string>
 </resources>

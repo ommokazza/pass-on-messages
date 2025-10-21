@@ -1,5 +1,6 @@
 package net.ommoks.azza.android.app.pass_on_messages.ui
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.pass_on_messages.R
@@ -36,6 +38,8 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
     private val viewModel: MainViewModel by viewModels()
     private lateinit var filterAdapter: FilterAdapter
     private lateinit var recyclerView: RecyclerView
+
+    private var clickCount = 0
 
     private val exportFileLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -62,6 +66,7 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         recyclerView = binding.filter
         setupRecyclerView()
         setupMenu()
+        setupDebugMode()
         applyViewModel()
     }
 
@@ -94,6 +99,15 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = filterAdapter
+        }
+    }
+
+    private fun setupDebugMode() {
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar).setOnClickListener {
+            clickCount++
+            if (clickCount % 7 == 0) {
+                startActivity(Intent(requireActivity(), DebugModeActivity::class.java))
+            }
         }
     }
 
