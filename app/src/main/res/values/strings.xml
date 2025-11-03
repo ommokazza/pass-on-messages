@@ -6,13 +6,13 @@
     <string name="add_rule">Add Another Rule</string>
     <string name="add_new_filter">Add New Filter</string>
     <string name="enter_phrase">Enter phrase</string>
-    <string name="remove_rule">Delete Rule</string>
-    <string name="export_rules">Export Rules</string>
-    <string name="import_rules">Import Rules</string>
-    <string name="toast_export_success">Exporting rules was successful.</string>
-    <string name="toast_export_fail">Exporting rules failed.</string>
-    <string name="toast_import_success">Importing rules was successful.</string>
-    <string name="toast_import_fail">Importing rules failed.</string>
+    <string name="delete_rule">Delete Rule</string>
+    <string name="export_filters">Export Filters</string>
+    <string name="import_filters">Import Filters</string>
+    <string name="toast_export_success">Exporting filters was successful.</string>
+    <string name="toast_export_fail">Exporting filters failed.</string>
+    <string name="toast_import_success">Importing filters was successful.</string>
+    <string name="toast_import_fail">Importing filters failed.</string>
 
     <!-- Edit/Delete Dialog -->
     <string name="save">Save</string>
