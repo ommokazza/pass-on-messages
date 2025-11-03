@@ -35,7 +35,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:contentDescription="@string/remove_rule" />
+            android:contentDescription="@string/delete_rule" />
     </LinearLayout>
 
 </LinearLayout>

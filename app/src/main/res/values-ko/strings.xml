@@ -5,13 +5,13 @@
     <string name="add_rule">규칙 추가 </string>
     <string name="add_new_filter">새 필터 추가</string>
     <string name="enter_phrase">문구를 입력하세요</string>
-    <string name="remove_rule">규칙 삭제</string>
-    <string name="export_rules">규칙 내보내기</string>
-    <string name="import_rules">규칙 가져오기</string>
-    <string name="toast_export_success">규칙을 성공적으로 내보냈습니다.</string>
-    <string name="toast_export_fail">규칙 내보내기에 실패했습니다.</string>
-    <string name="toast_import_success">규칙을 성공적으로 가져왔습니다.</string>
-    <string name="toast_import_fail">규칙 가져오기에 실패했습니다.</string>
+    <string name="delete_rule">규칙 삭제</string>
+    <string name="export_filters">필터 내보내기</string>
+    <string name="import_filters">필터 가져오기</string>
+    <string name="toast_export_success">필터를 성공적으로 내보냈습니다.</string>
+    <string name="toast_export_fail">필터 내보내기에 실패했습니다.</string>
+    <string name="toast_import_success">필터를 성공적으로 가져왔습니다.</string>
+    <string name="toast_import_fail">필터 가져오기에 실패했습니다.</string>
 
     <!-- Edit/Delete Dialog -->
     <string name="save">저장</string>
