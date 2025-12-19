@@ -8,7 +8,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/filters"
+        android:id="@+id/import_filters"
         android:title="@string/import_filters"
         app:showAsAction="never" />
 

@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.ommoks.azza.android.app.pass_on_messages.R
@@ -82,8 +83,19 @@ class MainFragment : Fragment(), FilterAdapter.OnFilterActionsListener, EditFilt
                         exportFileLauncher.launch("pass-on-messages-filters.json")
                         true
                     }
-                    R.id.filters -> {
-                        importFileLauncher.launch("application/json")
+                    R.id.import_filters -> {
+                        if (viewModel.filters.value.isNotEmpty()) {
+                            MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.import_filters)
+                                .setMessage(R.string.dialog_message_import_confirmation)
+                                .setPositiveButton(R.string.continue_btn) { _, _ ->
+                                    importFileLauncher.launch("application/json")
+                                }
+                                .setNegativeButton(R.string.cancel, null)
+                                .show()
+                        } else {
+                            importFileLauncher.launch("application/json")
+                        }
                         true
                     }
                     else -> false // 처리하지 않은 경우 false 반환
