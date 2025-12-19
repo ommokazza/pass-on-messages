@@ -23,6 +23,10 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
+    <!-- Import Confirmation Dialog -->
+    <string name="dialog_message_import_confirmation">Existing filters will be deleted. Do you want to continue?</string>
+    <string name="continue_btn">Continue</string>
+
     <!-- Filter Item -->
     <string name="name">Name</string>
     <string name="pass_on_to">Pass on to</string>

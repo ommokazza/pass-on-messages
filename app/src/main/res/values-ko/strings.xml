@@ -28,6 +28,8 @@
     <string name="rules">규칙</string>
     <string name="recent">최근</string>
     <string name="delete_filter">필터 삭제</string>
+    <string name="dialog_message_import_confirmation">기존 필터는 삭제됩니다. 계속할까요?</string>
+    <string name="continue_btn">계속</string>
 
     <!-- Rule Type -->
     <string name="rule_type_title_contains">제목에 포함됨</string>
