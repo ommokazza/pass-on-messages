@@ -5,6 +5,7 @@ import android.provider.Telephony
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.telephony.SmsManager
+import android.telephony.TelephonyManager
 import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
@@ -51,14 +52,14 @@ class NotiListener : NotificationListenerService() {
     }
 
     private suspend fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
-        val telephonyManager: TelephonyManager = requireContext().applicationContext.getSystemService(TelephonyManager::class.java)
+        val telephonyManager: TelephonyManager = this.applicationContext.getSystemService(TelephonyManager::class.java)
         val smsManager: SmsManager = this.getSystemService(SmsManager::class.java)
         val sb = StringBuilder()
         val messageToSend = sb.append(title).append("\n").append(fullText).toString()
         val parts = smsManager.divideMessage(messageToSend)
         if(parts.size > 1) {
             if (telephonyManager.networkOperator == "45006") {    // It can't use sendMultipartTextMessage() on LGU+
-                for (i in 0..(parts.size-1)) {
+                for (i in 0..<parts.size) {
                     delay(1000)
                     smsManager.sendTextMessage(phoneNumber, null, parts[i], null, null);
                 }
