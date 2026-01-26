@@ -50,17 +50,25 @@ class NotiListener : NotificationListenerService() {
         return mainRepository.loadFilters().filter { model -> model.isMatched(title, text) }
     }
 
-    private fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
-        val smsManager: SmsManager = applicationContext.getSystemService(SmsManager::class.java)
-        val messageToSend = title + "\n" + fullText
-        smsManager.sendMultipartTextMessage(
-            phoneNumber,
-            null,
-            smsManager.divideMessage(messageToSend),
-            null,
-            null
-        )
-    }
+    private suspend fun passOnNotification(phoneNumber: String, title: String, fullText: String) {
+        val telephonyManager: TelephonyManager = requireContext().applicationContext.getSystemService(TelephonyManager::class.java)
+        val smsManager: SmsManager = this.getSystemService(SmsManager::class.java)
+        val sb = StringBuilder()
+        val messageToSend = sb.append(title).append("\n").append(fullText).toString()
+        val parts = smsManager.divideMessage(messageToSend)
+        if(parts.size > 1) {
+            if (telephonyManager.networkOperator == "45006") {    // It can't use sendMultipartTextMessage() on LGU+
+                for (i in 0..(parts.size-1)) {
+                    delay(1000)
+                    smsManager.sendTextMessage(phoneNumber, null, parts[i], null, null);
+                }
+            } else {
+                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
+            }
+        } else {
+            smsManager.sendTextMessage(phoneNumber, null, messageToSend, null, null);
+        }
+    }    
 
     companion object {
         private const val TAG = "NotiListener"
